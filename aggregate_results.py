@@ -12,19 +12,19 @@ def update_results(results: pd.DataFrame):
     results_filtered = results[~results.function.isin({"antitumor", "antieuk"})]
     # Step 2: Update dataframe
     data_dict = dict()
-    genome_regions = set()
+    genome_region_classifiers = set()
     for _, row in results_filtered.iterrows():
-        genome_region = row.genome + "_" + row.region
-        if genome_region not in genome_regions:
-            genome_regions.add(genome_region)
+        genome_region_classifier = row.genome + "_" + row.region + "_" + row.classifier
+        if genome_region_classifier not in genome_region_classifiers:
+            genome_region_classifiers.add(genome_region_classifier)
             data_item = dict()
             data_item["Genome"] = row.genome
             data_item["Region"] = row.region
             data_item["Classifier"] = row.classifier
             data_item[row.function] = row.probability
-            data_dict[genome_region] = data_item
+            data_dict[genome_region_classifier] = data_item
         else:
-            data_dict[genome_region][row.function] = row.probability
+            data_dict[genome_region_classifier][row.function] = row.probability
     columns = [
         "Genome",
         "Region",
