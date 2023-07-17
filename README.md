@@ -16,9 +16,10 @@ Features that are used for prediction:
 - CDS motif (from antiSMASH)
 - smCOG (from antiSMASH)
 - polyketide and non-ribosomal peptide monomer prediction annotations (from antiSMASH)
+- Sequence Similarity Network of PFAM domains (from antiSMASH)
 - Resistance gene markers (from RGI)
 
-The workflow currently supports the prediction of four antibiotic activities:
+The classifiers used in this app are based on those published in Walker et al. 2021. They are trained using BGCs from the MiBIG (v1.4) database. Only those BGCs that has known antibiotic activities (types listed below), based on evidence in literature, were used for training the classifier. The workflow currently supports the prediction of four antibiotic activities:
 1. Antibacterial
 2. Antifungal
 3. Antigrampositive
@@ -47,4 +48,5 @@ Supported classifiers (and roadmap):
 
 - Medema, M. H. et al. antiSMASH: rapid identification, annotation and analysis of secondary metabolite biosynthesis gene clusters in bacterial and fungal genome sequences. Nucleic Acids Research 39, W339–W346 (2011).
 - Alcock, B. P. et al. CARD 2023: expanded curation, support for machine learning, and resistome prediction at the Comprehensive Antibiotic Resistance Database. Nucleic Acids Res 51, D690–D699 (2023).
+- Terlouw, B. R. et al. MIBiG 3.0: a community-driven effort to annotate experimentally validated biosynthetic gene clusters. Nucleic Acids Research 51, D603–D610 (2023).
 - Walker, A. S. & Clardy, J. A Machine Learning Bioinformatics Method to Predict Biological Activity from Biosynthetic Gene Clusters. J. Chem. Inf. Model. 61, 2560–2571 (2021).
