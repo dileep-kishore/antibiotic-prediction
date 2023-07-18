@@ -1,0 +1,103 @@
+#
+# define display information
+#
+name: Biosynthetic Gene Cluster (BGC) Antimicrobial Activity Prediction
+
+tooltip: |
+      Antimicrobial activity prediction
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+suggestions:
+    apps:
+        related:
+            [app1, app2]
+        next:
+            [app3, app4]
+
+#
+# Configure the display and description of parameters
+#
+parameters :
+    genome_refs :
+        ui-name : |
+            Genomes
+        short-hint : |
+            Genomes
+        long-hint  : |
+            Genomes
+
+description : |
+    <h1 class="code-line" data-line-start="0" data-line-end="1"><a id="Biosynthetic_Gene_Cluster_BGC_activity_prediction_0"></a>Biosynthetic Gene Cluster (BGC) activity prediction</h1>
+    <p class="has-line-data" data-line-start="2" data-line-end="3">Microorganisms produce a variety of secondary metabolites whose functions can be understood by studying their molecular structure, biosynthesis, and biological activity. Bioinformatics analysis of microbial genomes can reveal the genetic instructions for producing these Biosynthetic Gene Clusters (BGCs). antiSMASH is a popular tool that uses a rule-based method to predict BGCs in a given microbial genome.</p>
+    <p class="has-line-data" data-line-start="4" data-line-end="5">This app uses the genomic sequences of these BGCs to predict their potential biological activities using a machine-learning classifier. The features used in the classifier are derived from annotations of these BGCs (such as Pfam domains, smCOG annotations, etc.) together with information about resistomes predicted using the Resistance Gene Identifier (RGI). In this app, we specifically focus on antibiotic activity.</p>
+    <h2 class="code-line" data-line-start="6" data-line-end="7"><a id="BGC_activity_prediction_6"></a>BGC activity prediction</h2>
+    <p class="has-line-data" data-line-start="8" data-line-end="10">The BGC activity prediction workflow is illustrated below:<br>
+    <img src="https://github.com/dileep-kishore/antibiotic-prediction/blob/main/assets/workflow.jpg?raw=true" alt="Workflow"></p>
+    <p class="has-line-data" data-line-start="11" data-line-end="12">The BGC activity prediction app accepts a microbial genome in fasta format as input and processes it using antiSMASH and RGI to extract features. These features are used to predict the BGC function.</p>
+    <p class="has-line-data" data-line-start="13" data-line-end="14">Features that are used for prediction:</p>
+    <ul>
+    <li class="has-line-data" data-line-start="14" data-line-end="15">PFAM (from antiSMASH)</li>
+    <li class="has-line-data" data-line-start="15" data-line-end="16">CDS motif (from antiSMASH)</li>
+    <li class="has-line-data" data-line-start="16" data-line-end="17">smCOG (from antiSMASH)</li>
+    <li class="has-line-data" data-line-start="17" data-line-end="18">polyketide and non-ribosomal peptide monomer prediction annotations (from antiSMASH)</li>
+    <li class="has-line-data" data-line-start="18" data-line-end="19">Sequence Similarity Network of PFAM domains (from antiSMASH)</li>
+    <li class="has-line-data" data-line-start="19" data-line-end="21">Resistance gene markers (from RGI)</li>
+    </ul>
+    <p class="has-line-data" data-line-start="21" data-line-end="22">The classifiers used in this app are based on those published in Walker et al. 2021. They are trained using BGCs from the MiBIG (v1.4) database. Only those BGCs that has known antibiotic activities (types listed below), based on evidence in literature, were used for training the classifier. The workflow currently supports the prediction of four antibiotic activities:</p>
+    <ol>
+    <li class="has-line-data" data-line-start="22" data-line-end="23">Antibacterial</li>
+    <li class="has-line-data" data-line-start="23" data-line-end="24">Antifungal</li>
+    <li class="has-line-data" data-line-start="24" data-line-end="25">Antigrampositive</li>
+    <li class="has-line-data" data-line-start="25" data-line-end="27">Antigramnegative</li>
+    </ol>
+    <h2 class="code-line" data-line-start="27" data-line-end="28"><a id="Pipeline_27"></a>Pipeline</h2>
+    <p class="has-line-data" data-line-start="29" data-line-end="30">The BGC activity prediction pipeline can be found at: <a href="https://github.com/dileep-kishore/antibiotic-prediction">https://github.com/dileep-kishore/antibiotic-prediction</a></p>
+    <p class="has-line-data" data-line-start="31" data-line-end="32">It contains the following main modules:</p>
+    <ol>
+    <li class="has-line-data" data-line-start="32" data-line-end="33"><code>train_classifiers.sh</code> - Script that trains the classifiers for BGC activity prediction (antibacterial, antifungal, etc.)</li>
+    <li class="has-line-data" data-line-start="33" data-line-end="34"><code>predict_function.sh</code> - Script that predict the activity of BGCs for a given genome</li>
+    <li class="has-line-data" data-line-start="34" data-line-end="36"><code>multiple_predict_function.py</code> - Script that runs antismash and rgi and predicts the activity of a list of genomes</li>
+    </ol>
+    <p class="has-line-data" data-line-start="36" data-line-end="37">Example command to run the workflow:</p>
+    <pre><code class="has-line-data" data-line-start="38" data-line-end="40" class="language-bash">python multiple_predict_function.py path/genome1 path/genome2 --output_dir outputs --no_SSN True
+    </code></pre>
+    <p class="has-line-data" data-line-start="41" data-line-end="42">Supported classifiers (and roadmap):</p>
+    <ol>
+    <li class="has-line-data" data-line-start="42" data-line-end="43">Tree - <code>ExtraTreesClassifier</code> from scikit-learn</li>
+    <li class="has-line-data" data-line-start="43" data-line-end="44">Support vector machine - <code>SVC</code> from scikit-learn (in progress)</li>
+    <li class="has-line-data" data-line-start="44" data-line-end="46">Logistic regression - <code>SGDClassifier</code> from scikit-learn (in progress)</li>
+    </ol>
+    <h2 class="code-line" data-line-start="46" data-line-end="47"><a id="References_46"></a>References</h2>
+    <ul>
+    <li class="has-line-data" data-line-start="48" data-line-end="49">Medema, M. H. et al. antiSMASH: rapid identification, annotation and analysis of secondary metabolite biosynthesis gene clusters in bacterial and fungal genome sequences. Nucleic Acids Research 39, W339–W346 (2011).</li>
+    <li class="has-line-data" data-line-start="49" data-line-end="50">Alcock, B. P. et al. CARD 2023: expanded curation, support for machine learning, and resistome prediction at the Comprehensive Antibiotic Resistance Database. Nucleic Acids Res 51, D690–D699 (2023).</li>
+    <li class="has-line-data" data-line-start="50" data-line-end="51">Terlouw, B. R. et al. MIBiG 3.0: a community-driven effort to annotate experimentally validated biosynthetic gene clusters. Nucleic Acids Research 51, D603–D610 (2023).</li>
+    <li class="has-line-data" data-line-start="51" data-line-end="52">Walker, A. S. &amp; Clardy, J. A Machine Learning Bioinformatics Method to Predict Biological Activity from Biosynthetic Gene Clusters. J. Chem. Inf. Model. 61, 2560–2571 (2021).</li>
+    </ul>
+
+publication :
+    - pmid: 21672958
+      display-text: |
+          Medema, M. H. et al. antiSMASH: rapid identification, annotation and analysis of secondary metabolite biosynthesis gene clusters in bacterial and fungal genome sequences. Nucleic Acids Research 39, W339–W346 (2011).
+      link: https://doi.org/10.1093/nar/gkr466
+
+    - pmid: 36263822
+      display-text: |
+          Alcock, B. P. et al. CARD 2023: expanded curation, support for machine learning, and resistome prediction at the Comprehensive Antibiotic Resistance Database. Nucleic Acids Res 51, D690–D699 (2023).
+      link: https://doi.org/10.1093/nar/gkac920
+
+    - pmid: 36399496
+      display-text: |
+          Terlouw, B. R. et al. MIBiG 3.0: a community-driven effort to annotate experimentally validated biosynthetic gene clusters. Nucleic Acids Research 51, D603–D610 (2023).
+      link: https://doi.org/10.1093/nar/gkac1049
+
+    - pmid: 34042443
+      display-text: |
+          Walker, A. S. & Clardy, J. A Machine Learning Bioinformatics Method to Predict Biological Activity from Biosynthetic Gene Clusters. J. Chem. Inf. Model. 61, 2560–2571 (2021).
+      link: https://doi.org/10.1021/acs.jcim.0c01304
