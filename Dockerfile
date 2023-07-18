@@ -35,7 +35,7 @@ RUN bash /deps/install_natural_product.sh $INS_COMMIT
 
 
 # Clone antibiotic-prediction repo
-ARG RUN_COMMIT="041904f1680acdbd20fd6c592fc7da6ca3894000"
+ARG RUN_COMMIT="cf828ca5b3c4a05a9c826641e7ca68e8a676e8f8"
 RUN echo '12' >/dev/null && cd /deps && \
        git clone --branch main https://github.com/dileep-kishore/antibiotic-prediction.git && \
        cd antibiotic-prediction && git checkout $RUN_COMMIT
