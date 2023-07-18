@@ -57,23 +57,27 @@ description : |
     <li class="has-line-data" data-line-start="25" data-line-end="27">Antigramnegative</li>
     </ol>
 
-publication :
-    - pmid: 21672958
+publications :
+    - 
+      pmid: 21672958
       display-text: |
           Medema, M. H. et al. antiSMASH: rapid identification, annotation and analysis of secondary metabolite biosynthesis gene clusters in bacterial and fungal genome sequences. Nucleic Acids Research 39, W339–W346 (2011).
       link: https://doi.org/10.1093/nar/gkr466
 
-    - pmid: 36263822
+    - 
+      pmid: 36263822
       display-text: |
           Alcock, B. P. et al. CARD 2023: expanded curation, support for machine learning, and resistome prediction at the Comprehensive Antibiotic Resistance Database. Nucleic Acids Res 51, D690–D699 (2023).
       link: https://doi.org/10.1093/nar/gkac920
 
-    - pmid: 36399496
+    - 
+      pmid: 36399496
       display-text: |
           Terlouw, B. R. et al. MIBiG 3.0: a community-driven effort to annotate experimentally validated biosynthetic gene clusters. Nucleic Acids Research 51, D603–D610 (2023).
       link: https://doi.org/10.1093/nar/gkac1049
 
-    - pmid: 34042443
+    - 
+      pmid: 34042443
       display-text: |
           Walker, A. S. & Clardy, J. A Machine Learning Bioinformatics Method to Predict Biological Activity from Biosynthetic Gene Clusters. J. Chem. Inf. Model. 61, 2560–2571 (2021).
       link: https://doi.org/10.1021/acs.jcim.0c01304
