@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 GENOME=$1
-GENOME_NAME=$(basename "${GENOME%%.*}")
+# GENOME_NAME=$(basename "${GENOME%%.*}")
+GENOME_NAME=$(basename $GENOME)
 OUTPUT_DIR=$2/$GENOME_NAME
 mkdir -p $OUTPUT_DIR
 NO_SSN=$3
