@@ -140,6 +140,9 @@ venv.bak/
 # mkdocs documentation
 /site
 
+# mamba
+.mamba
+
 # mypy
 .mypy_cache/
 .dmypy.json
@@ -164,3 +167,14 @@ cython_debug/
 # Data
 data/temp_file
 outputs
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
+
