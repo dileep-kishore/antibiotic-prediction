@@ -166,6 +166,7 @@ cython_debug/
 
 # Data
 data/temp_file
+data/clinker_examples
 outputs
 
 # Devenv
