@@ -66,7 +66,6 @@ def main(source_bgc: str, target_bgcs: list[str]) -> None:
             raise FileNotFoundError(f"{target_bgc_path} does not exist")
         target_bgc_paths.append(target_bgc_path)
         ga = run_clinker([source_bgc_path, target_bgc_path])
-        # TODO: Change dataframe to have one row and them concat all the rows
         cluster_similarity = parse_cluster_similarity(ga)
         data_item = {
             "source_bgc": source_bgc_path.stem,
