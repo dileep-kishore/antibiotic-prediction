@@ -28,7 +28,7 @@ if [ ! -d "$OUTPUT_DIR/rgi" ]; then
         BGC=$(basename "$f" .gbk)
         mkdir $OUTPUT_DIR/rgi/$BGC
         python gbk2fasta.py "$f" $OUTPUT_DIR/rgi/"$BGC".fna
-        rgi main -i $OUTPUT_DIR/rgi/"$BGC".fna -o $OUTPUT_DIR/rgi/"$BGC"/"$BGC" --include_loose
+        rgi main -i $OUTPUT_DIR/rgi/"$BGC".fna -o $OUTPUT_DIR/rgi/"$BGC"/"$BGC" --include_loose --clean
     done
 else
     echo "RGI data for $GENOME already exists"
