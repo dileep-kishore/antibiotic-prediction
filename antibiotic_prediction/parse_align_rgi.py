@@ -28,6 +28,7 @@ def parse_rgi(rgi_file: str) -> pd.DataFrame:
     if not rgi_data_path.exists():
         raise FileNotFoundError(f"{rgi_data_path} does not exist")
     rgi_data = pd.read_csv(rgi_file, sep="\t")
+    rgi_data.Contig = rgi_data.Contig.str.replace(" ", "")
     return rgi_data
 
 
@@ -85,8 +86,8 @@ def parse_blast(blast_results: pathlib.Path) -> pd.DataFrame:
     for qresult in blast_qresult:
         for hit in qresult.hits:
             for hsp in hit.hsps:
-                if hsp.evalue >= 1e-10:
-                    continue
+                # if hsp.evalue >= 1e-10:
+                #     continue
                 blast_data.append(
                     {
                         "query_id": qresult.id,
@@ -117,6 +118,7 @@ def parse_blast(blast_results: pathlib.Path) -> pd.DataFrame:
         return pd.DataFrame(sorted_blast_data)
 
 
+# TODO: Change blast output to XML format
 def perform_blast(
     query_protein: pd.Series,
     target_proteins: pd.DataFrame,
@@ -208,8 +210,10 @@ def get_best_alignment(
     aligner.substitution_matrix = Align.substitution_matrices.load("BLOSUM62")
     aligner.open_gap_score = -15.00  # -10
     aligner.extend_gap_score = -6.67  # -0.5
-    for ind, target_protein in blastp_target_proteins.items():
-        alignments = aligner.align(query_protein, target_protein)
+    for ind, target_protein in blastp_target_proteins.iterrows():
+        alignments = aligner.align(
+            query_protein.Predicted_Protein, target_protein.Predicted_Protein
+        )
         alignment = max(alignments, key=lambda a: a.score)  # type: ignore
         score = alignment.score  # type: ignore
         if score > best_score:
