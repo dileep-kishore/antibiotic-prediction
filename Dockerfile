@@ -1,55 +1,46 @@
-FROM kbase/sdkpython:3.8.0
-MAINTAINER KBase Developer
-# -----------------------------------------
-# In this section, you can install any system dependencies required
-# to run your App.  For instance, you could place an apt-get update or
-# install line here, a git checkout to download code, or run any other
-# installation scripts.
+FROM mambaorg/micromamba
 
-ARG INS_COMMIT="66584f928aa3ca440179d99b688e906473c33604"
+# metadata
+LABEL software="antibiotic-prediction"
+LABEL version="0.1.0"
 
+MAINTAINER name="Dileep Kishore" email="kishored@ornl.gov"
+
+USER 0
 RUN apt-get update && apt-get -y upgrade \
   && apt-get install -y --no-install-recommends \
-    git \
-    wget \
-    g++ \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+  git \
+  wget \
+  g++ \
+  ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
 
+# mamba setup
+RUN micromamba shell init --shell=bash --prefix=~/micromamba
 
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+# Copy setup scripts
+COPY setup/install_antismash.sh /deps/
+COPY setup/install_rgi.sh /deps/
+COPY setup/install_natural_product.sh /deps/
 
-# Setup mamba
-RUN wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh
-RUN bash Mambaforge-Linux-x86_64.sh -b -p "/mambaforge"
-
-# Download setup scripts
-RUN wget https://raw.githubusercontent.com/dileep-kishore/antibiotic-prediction/$INS_COMMIT/setup/install_antismash.sh -P /deps
-RUN wget https://raw.githubusercontent.com/dileep-kishore/antibiotic-prediction/$INS_COMMIT/setup/install_rgi.sh -P /deps
-RUN wget https://raw.githubusercontent.com/dileep-kishore/antibiotic-prediction/$INS_COMMIT/setup/install_natural_product.sh -P /deps
+# Copy env
+COPY setup/env_rgi5.yml /deps/
+COPY setup/env_natural_product.yml /deps/
 
 # Run setup scripts
-RUN bash /deps/install_antismash.sh
-RUN bash /deps/install_rgi.sh $INS_COMMIT
-RUN bash /deps/install_natural_product.sh $INS_COMMIT
+# TODO: Replace antismash and rgi with public images?
+# RUN bash /deps/install_antismash.sh
+# RUN bash /deps/install_rgi.sh $INS_COMMIT
+# RUN bash /deps/install_natural_product.sh $INS_COMMIT
+RUN micromamba env create -f /deps/env_natural_product.yml
 
 
-# Clone antibiotic-prediction repo
-ARG RUN_COMMIT="cf828ca5b3c4a05a9c826641e7ca68e8a676e8f8"
-RUN echo '12' >/dev/null && cd /deps && \
-       git clone --branch main https://github.com/dileep-kishore/antibiotic-prediction.git && \
-       cd antibiotic-prediction && git checkout $RUN_COMMIT
+# Set up antibiotic-prediction repo
+WORKDIR /antibiotic-prediction
+COPY . .
 
 # -----------------------------------------
 
-COPY ./ /kb/module
-RUN mkdir -p /kb/module/work
-RUN chmod -R a+rw /kb/module
+ENTRYPOINT ["micromamba", "run", "-n", "natural_product" ]
 
-WORKDIR /kb/module
-
-RUN make all
-
-ENTRYPOINT [ "./scripts/entrypoint.sh" ]
-
-CMD [ ]
+# CMD [ ]
