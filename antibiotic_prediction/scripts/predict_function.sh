@@ -8,8 +8,8 @@ mkdir -p $OUTPUT_DIR
 NO_SSN=$3
 
 # Step 1: Run antismash
-source deactivate &>/dev/null
-source activate antismash
+micromamba deactive &>/dev/null
+micromamba activate antismash
 if [ ! -d "$OUTPUT_DIR/antismash" ]; then
     echo "Running antismash"
     mkdir -p $OUTPUT_DIR/antismash
@@ -19,8 +19,8 @@ else
 fi
 
 # Step 2: For each BGC get fasta and run RGI
-source deactivate &>/dev/null
-source activate rgi5
+micromamba deactive &>/dev/null
+micromamba activate rgi5
 if [ ! -d "$OUTPUT_DIR/rgi" ]; then
     echo "Running RGI"
     mkdir -p $OUTPUT_DIR/rgi
@@ -35,8 +35,8 @@ else
 fi
 
 # Step 3: Run prediction script for each BGC
-source deactivate &>/dev/null
-source activate natural_product
+micromamba deactive &>/dev/null
+micromamba activate natural_product
 if [ ! -f "$OUTPUT_DIR/prediction_results.csv" ]; then
     echo "Running BGC activity prediction"
     python predict_function.py $OUTPUT_DIR/antismash $OUTPUT_DIR/rgi \
