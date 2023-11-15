@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO: Might need to initialize micromamba
+
 GENOME=$1
 # GENOME_NAME=$(basename "${GENOME%%.*}")
 GENOME_NAME=$(basename $GENOME)
@@ -20,7 +22,7 @@ fi
 
 # Step 2: For each BGC get fasta and run RGI
 micromamba deactive &>/dev/null
-micromamba activate rgi5
+micromamba activate rgi
 if [ ! -d "$OUTPUT_DIR/rgi" ]; then
     echo "Running RGI"
     mkdir -p $OUTPUT_DIR/rgi
