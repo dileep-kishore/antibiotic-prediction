@@ -86,8 +86,8 @@ def parse_blast(blast_results: pathlib.Path) -> pd.DataFrame:
     for qresult in blast_qresult:
         for hit in qresult.hits:
             for hsp in hit.hsps:
-                # if hsp.evalue >= 1e-10:
-                #     continue
+                if hsp.evalue >= 0.01:
+                    continue
                 blast_data.append(
                     {
                         "query_id": qresult.id,

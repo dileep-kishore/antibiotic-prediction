@@ -37,11 +37,11 @@ if __name__ == "__main__":
     )
     PARSER.add_argument("--output_dir", help="Directory to store the outputs")
     PARSER.add_argument(
-        "--no_SSN", help="Flag to indicate whether to consider SSN for features"
+        "--no_SSN", action="store_true", help="Flag to indicate whether to consider SSN for features"
     )
     ARGS = PARSER.parse_args()
 
     genomes = ARGS.genomes
     output_dir = ARGS.output_dir
-    no_SSN = ARGS.no_SSN
+    no_SSN = "True" if ARGS.no_SSN else "False"
     main(genomes, output_dir, no_SSN)
