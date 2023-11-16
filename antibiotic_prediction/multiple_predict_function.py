@@ -2,6 +2,7 @@
 
 import argparse
 import glob
+import multiprocessing as mp
 import pathlib
 import subprocess
 from typing import List
@@ -17,14 +18,32 @@ def aggregate_results_cmd(genomes: List[pathlib.Path], output_dir: str):
     return cmd
 
 
-def main(genomes: List[pathlib.Path], output_dir: str, no_SSN: str):
+def run_function_cmd(
+    genome: pathlib.Path, output_dir: str, no_SSN: str, perc_complete: float
+) -> str:
+    cmd = predict_function_cmd(genome, output_dir, no_SSN)
+    subprocess.run(cmd, check=True)
+    perc_str = "%:.2f".format(perc_complete)
+    callback = perc_str + ". Running BGC function prediction on " + str(genome)
+    return callback
+
+
+def main(genomes: List[pathlib.Path], output_dir: str, no_SSN: str, ncpus: int):
     # Step 1: Run BGC function prediction
-    for i, genome in enumerate(genomes):
-        print(str(i + 1) + ". Running BGC function prediction on " + str(genome))
-        predict_cmd = predict_function_cmd(genome, output_dir, no_SSN)
-        subprocess.run(predict_cmd, check=True)
-        print("--------------------------------------------")
+    if ncpus == -1:
+        npools = mp.cpu_count()
+    else:
+        npools = ncpus
+    with mp.Pool(npools) as pool:
+        for i, genome in enumerate(genomes):
+            perc_complete = (i + 1) / len(genomes) * 100
+            pool.starmap_async(
+                run_function_cmd,
+                [(genome, output_dir, no_SSN, perc_complete)],
+                callback=print,
+            )
     # Step 2: Aggregate results
+    print("--------------------------------------------")
     print("Aggregating results")
     aggregate_cmd = aggregate_results_cmd(genomes, output_dir)
     subprocess.run(aggregate_cmd, check=True)
@@ -43,6 +62,12 @@ if __name__ == "__main__":
         action="store_true",
         help="Flag to indicate whether to consider SSN for features",
     )
+    PARSER.add_argument(
+        "--ncpus",
+        type=int,
+        default=-1,
+        help="Number of CPUs to use for parallelization",
+    )
     ARGS = PARSER.parse_args()
 
     genomes_glob = ARGS.genomes_glob
@@ -54,4 +79,5 @@ if __name__ == "__main__":
         genomes.append(genome_path)
     output_dir = ARGS.output_dir
     no_SSN = "True" if ARGS.no_SSN else "False"
-    main(genomes, output_dir, no_SSN)
+    ncpus = ARGS.ncpus
+    main(genomes, output_dir, no_SSN, ncpus)
