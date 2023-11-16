@@ -224,7 +224,6 @@ def get_best_alignment(
 
 
 # FIXME: Make sure that the top hits are not just subsequences but bigger protein matches
-# Also, reconsider evalue thresholds
 def main(
     query_file: str, target_file: str, perform_filter: bool, output_dir: str
 ) -> float:
