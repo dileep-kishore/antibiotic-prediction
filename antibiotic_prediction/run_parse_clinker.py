@@ -54,7 +54,7 @@ def parse_cluster_similarity(ga: Globaligner) -> float:
     return matrix[0, 1]
 
 
-def main(source_bgc: str, target_bgcs: list[str]) -> None:
+def main(source_bgc: str, target_bgcs: list[str], output_dir: pathlib.Path) -> None:
     source_bgc_path = pathlib.Path(source_bgc)
     if not source_bgc_path.exists():
         raise FileNotFoundError("{source_bgc_path} does not exist")
@@ -74,7 +74,9 @@ def main(source_bgc: str, target_bgcs: list[str]) -> None:
         }
         data.append(data_item)
     df = pd.DataFrame(data)
-    df.to_csv(f"{source_bgc_path.stem}_cluster_similarity.csv")
+    if not output_dir.exists():
+        output_dir.mkdir(parents=True)
+    df.to_csv(f"{output_dir}/{source_bgc_path.stem}_cluster_similarity.csv")
 
 
 if __name__ == "__main__":
@@ -89,8 +91,10 @@ if __name__ == "__main__":
         nargs="+",
         help="Path to .gbk files containing the target BGCs from the second genome",
     )
+    PARSER.add_argument("--output_dir", type=str, help="Directory to store the outputs")
     ARGS = PARSER.parse_args()
 
     source_bgc = ARGS.source_bgc
     target_bgcs = ARGS.target_bgcs
-    main(source_bgc, target_bgcs)
+    output_dir = pathlib.Path(ARGS.output_dir)
+    main(source_bgc, target_bgcs, output_dir)
