@@ -50,7 +50,7 @@ if __name__ == "__main__":
     for genome in glob.glob(genomes_glob):
         genome_path = pathlib.Path(genome)
         if not genome_path.is_file():
-            raise FileNotFoundError(f"{genome} is not a file")
+            continue
         genomes.append(genome_path)
     output_dir = ARGS.output_dir
     no_SSN = "True" if ARGS.no_SSN else "False"
