@@ -12,7 +12,7 @@ numpy = "^1.26.1"
 pandas = "^2.1.2"
 clinker = "^0.0.28"
 click = "^8.1.7"
-xgboost = "^2.0.1"
+biopython = "^1.81"
 
 
 [tool.poetry.group.dev.dependencies]

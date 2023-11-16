@@ -1,0 +1,13 @@
+name: resistance_prediction
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - python=3.11
+  - blast=2.14.1
+  - pip:
+    - numpy==1.26.1
+    - pandas==2.1.2
+    - clinker==0.0.28
+    - click==8.1.7
+    - biopython==1.81

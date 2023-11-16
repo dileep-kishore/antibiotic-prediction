@@ -39,11 +39,17 @@ COPY --chown=$MAMBA_USER:$MAMBA_USER setup/install_rgi.sh /deps/
 COPY --chown=$MAMBA_USER:$MAMBA_USER setup/env_natural_product.yml /deps/
 # COPY setup/env_rgi5.yml ~/deps/
 
-# Set up the environments
+# Set up the environments for antibiotic prediction
 RUN bash /deps/install_antismash.sh
 RUN bash /deps/install_rgi.sh
 RUN micromamba env create -f /deps/env_natural_product.yml
 # RUN micromamba env create -f /deps/env_rgi5.yml
+
+# Set up environment for resistance prediction
+COPY --chown=$MAMBA_USER:$MAMBA_USER setup/env_resistance_prediction.yml /deps/
+RUN micromamba env create -f /deps/env_resistance_prediction.yml
+
+# Clean up
 RUN micromamba clean --all --yes
 
 # Set up antibiotic-prediction repo
