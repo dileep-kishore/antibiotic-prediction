@@ -24,7 +24,7 @@ def run_function_cmd(
     cmd = predict_function_cmd(genome, output_dir, no_SSN)
     subprocess.run(cmd, check=True)
     perc_str = "%:.2f".format(perc_complete)
-    callback = perc_str + ". Running BGC function prediction on " + str(genome)
+    callback = perc_str + ". Running BGC function prediction on " + genome.stem
     return callback
 
 
