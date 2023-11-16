@@ -8,23 +8,19 @@ import subprocess
 from typing import List
 
 
-def predict_function_cmd(genome: pathlib.Path, output_dir: str, no_SSN: str):
-    cmd = ["bash", "predict_function.sh", genome, output_dir, no_SSN]
-    return cmd
-
-
 def aggregate_results_cmd(genomes: List[pathlib.Path], output_dir: str):
     cmd = ["python", "aggregate_results.py", *genomes, "--output_dir", output_dir]
     return cmd
 
 
-def run_function_cmd(
+def run_predict_function(
     genome: pathlib.Path, output_dir: str, no_SSN: str, perc_complete: float
 ) -> str:
-    cmd = predict_function_cmd(genome, output_dir, no_SSN)
+    cmd = ["bash", "predict_function.sh", genome, output_dir, no_SSN]
     subprocess.run(cmd, check=True)
     perc_str = "%:.2f".format(perc_complete)
     callback = perc_str + ". Running BGC function prediction on " + genome.stem
+    print(callback)
     return callback
 
 
@@ -35,13 +31,14 @@ def main(genomes: List[pathlib.Path], output_dir: str, no_SSN: str, ncpus: int):
     else:
         npools = ncpus
     with mp.Pool(npools) as pool:
+        task_args = []
         for i, genome in enumerate(genomes):
             perc_complete = (i + 1) / len(genomes) * 100
-            pool.starmap_async(
-                run_function_cmd,
-                [(genome, output_dir, no_SSN, perc_complete)],
-                callback=print,
-            )
+            task_args.append((genome, output_dir, no_SSN, perc_complete))
+        pool.starmap(
+            run_predict_function,
+            task_args,
+        )
     # Step 2: Aggregate results
     print("--------------------------------------------")
     print("Aggregating results")
