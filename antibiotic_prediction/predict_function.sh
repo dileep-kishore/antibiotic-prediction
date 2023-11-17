@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# TODO: Might need to initialize micromamba
+# Initialize micromamba
+eval "$(micromamba shell hook --shell bash)"
 
 GENOME=$1
 # GENOME_NAME=$(basename "${GENOME%%.*}")
@@ -42,7 +43,7 @@ micromamba activate natural_product
 if [ ! -f "$OUTPUT_DIR/prediction_results.csv" ]; then
     echo "Running BGC activity prediction"
     python predict_function.py $OUTPUT_DIR/antismash $OUTPUT_DIR/rgi \
-        --data_dir data \
+        --data_dir ../data \
         --output_dir $OUTPUT_DIR \
         --no_SSN $NO_SSN \
         --classifiers tree \

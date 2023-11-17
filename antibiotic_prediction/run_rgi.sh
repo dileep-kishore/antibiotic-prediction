@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Initialize micromamba
+eval "$(micromamba shell hook --shell bash)"
+
 GENOME=$1
 OUTPUT_DIR=$2
 GENOME_NAME=$3
