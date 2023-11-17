@@ -6,6 +6,7 @@ Created on Wed Mar  6 11:14:09 2019
 """
 
 import math
+import os
 import subprocess
 from xml.etree import ElementTree as ET
 
@@ -329,6 +330,8 @@ def findSSNMembership(
     # figure out which clusters sequences with e-value score lower than threshold
     clusters_with_match = []
     threshold = ssn_thresholds[ssn_index]
+    if not os.path.exists(output_path + "temp_file/"):
+        os.mkdir(output_path + "temp_file/")
     waiting = True
     while waiting:
         try:
