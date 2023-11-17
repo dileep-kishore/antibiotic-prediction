@@ -53,8 +53,12 @@ RUN micromamba env create -f /deps/env_resistance_prediction.yml
 RUN micromamba clean --all --yes
 
 # Set up antibiotic-prediction repo
+USER root
+RUN mkdir /outputs && chown $MAMBA_USER:$MAMBA_USER /outputs
+USER $MAMBA_USER
 WORKDIR /antibiotic-prediction
 COPY . .
+WORKDIR /antibiotic-prediction/antibiotic_prediction
 
 # -----------------------------------------
 ENTRYPOINT [ "/usr/local/bin/_entrypoint.sh" ]
