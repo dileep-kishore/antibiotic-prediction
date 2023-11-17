@@ -162,6 +162,8 @@ def perform_blast(
         str(blast_results),
         "-outfmt",
         "6",
+        "-num_threads",
+        "1",
     ]
     subprocess.run(blast_cmd, check=True)
     blast_df = parse_blast(blast_results)

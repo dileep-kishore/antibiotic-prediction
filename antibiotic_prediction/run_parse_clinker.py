@@ -26,7 +26,7 @@ def run_clinker(files: list[pathlib.Path]) -> Globaligner:
     Globaligner
         The CLINKER object containing the results of the alignment.
     """
-    return clinker(files)
+    return clinker(files, jobs=1)
 
 
 def parse_cluster_similarity(ga: Globaligner) -> float:
