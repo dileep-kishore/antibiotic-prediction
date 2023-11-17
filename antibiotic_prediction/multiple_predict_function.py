@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import argparse
-import glob
 import multiprocessing as mp
 import pathlib
 import subprocess
@@ -16,7 +15,7 @@ def aggregate_results_cmd(genomes: List[pathlib.Path], output_dir: str):
 def run_predict_function(
     genome: pathlib.Path, output_dir: str, no_SSN: str, perc_complete: float
 ) -> str:
-    cmd = ["bash", "predict_function.sh", genome, output_dir, no_SSN]
+    cmd = ["bash", "predict_function.sh", genome, genome.stem, output_dir, no_SSN]
     subprocess.run(cmd, check=True)
     perc_str = "%:.2f".format(perc_complete)
     callback = perc_str + ". Running BGC function prediction on " + genome.stem
@@ -68,13 +67,16 @@ if __name__ == "__main__":
     ARGS = PARSER.parse_args()
 
     genomes_glob = ARGS.genomes_glob
+    genome_parent_dir = pathlib.Path(genomes_glob).parent
+    genome_glob_pattern = pathlib.Path(genomes_glob).name
     genomes = []
-    for genome in glob.glob(genomes_glob):
-        genome_path = pathlib.Path(genome)
+    for genome_path in genome_parent_dir.glob(genome_glob_pattern):
         if not genome_path.is_file():
             continue
         genomes.append(genome_path)
+
     output_dir = ARGS.output_dir
     no_SSN = "True" if ARGS.no_SSN else "False"
     ncpus = ARGS.ncpus
+
     main(genomes, output_dir, no_SSN, ncpus)

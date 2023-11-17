@@ -4,11 +4,10 @@
 eval "$(micromamba shell hook --shell bash)"
 
 GENOME=$1
-# GENOME_NAME=$(basename "${GENOME%%.*}")
-GENOME_NAME=$(basename "$GENOME")
-OUTPUT_DIR=$2/$GENOME_NAME
+GENOME_NAME=$2
+OUTPUT_DIR=$3/$GENOME_NAME
 mkdir -p "$OUTPUT_DIR"
-NO_SSN=$3
+NO_SSN=$4
 
 # Step 1: Run antismash
 micromamba deactive &>/dev/null
