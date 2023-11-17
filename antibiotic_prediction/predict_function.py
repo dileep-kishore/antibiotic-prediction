@@ -5,12 +5,11 @@ import pathlib
 import pickle
 from typing import List
 
-from Bio import SeqIO
 import numpy as np
 import pandas as pd
-
-from predict_function_tools import read_training_data, read_SSN_features
 import readInputFiles
+from Bio import SeqIO
+from predict_function_tools import read_SSN_features, read_training_data
 
 
 def collect_input_files(antismash_dir: pathlib.Path, rgi_dir: pathlib.Path):
@@ -115,7 +114,7 @@ def predict_function(
         test_SSN_feature_matrix = []
     else:
         test_SSN_feature_matrix = read_SSN_features(
-            data_dir, antismash_bgc_file, no_SSN
+            data_dir, antismash_bgc_file, no_SSN, output_dir
         )
     data_path = str(data_dir) + "/"
     test_features = readInputFiles.readInputFiles(

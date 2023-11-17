@@ -5,17 +5,13 @@ Created on Wed Mar  6 11:14:09 2019
 @author: Allison Walker
 """
 
-from Bio import SeqIO
-from Bio import Seq
-from Bio import AlignIO
-from Bio.Align.Applications import ClustalwCommandline
-from Bio import Phylo
-from Bio.Align.Applications import MuscleCommandline
-from Bio import pairwise2
-from xml.etree import ElementTree as ET
-import numpy as np
 import math
 import subprocess
+from xml.etree import ElementTree as ET
+
+import numpy as np
+from Bio import AlignIO, Phylo, Seq, SeqIO, pairwise2
+from Bio.Align.Applications import ClustalwCommandline, MuscleCommandline
 
 SSN_filenames = [
     "20799_thiolase_N_term_25_full_ssn.xgmml",
@@ -208,6 +204,7 @@ def generateSSNFeatureMatrix(
     blast_exe,
     genome_name,
     data_path,
+    output_path,
 ):
     pfam_name_dictionary = makePFAMNameDictionary(SSN_pfam_names, SSN_feature_names)
     SSN_feature_matrix = np.zeros((len(clusters), len(SSN_feature_names)))
@@ -239,6 +236,7 @@ def generateSSNFeatureMatrix(
                     blast_exe,
                     genome_name,
                     data_path,
+                    output_path,
                 )
                 # print(ssn_membership)
                 for cluster in ssn_membership:
@@ -292,6 +290,7 @@ def findSSNMembership(
     blast_exe,
     genome_name,
     data_path,
+    output_path,
 ):
     # read all the sequences from the sequence file, discard any with the same name as current cluster
     # print cluster_name
@@ -334,7 +333,7 @@ def findSSNMembership(
     while waiting:
         try:
             temp_fasta = open(
-                data_path + "temp_file/" + genome_name + "seq1.fasta", "w"
+                output_path + "temp_file/" + genome_name + "seq1.fasta", "w"
             )
             waiting = False
         except Exception as e:
@@ -351,7 +350,7 @@ def findSSNMembership(
             while waiting:
                 try:
                     temp_fasta = open(
-                        data_path + "temp_file/" + genome_name + "seq2.fasta", "w"
+                        output_path + "temp_file/" + genome_name + "seq2.fasta", "w"
                     )
                     waiting = False
                 except:
@@ -364,7 +363,7 @@ def findSSNMembership(
             gap_extend = "1"
             comp_based = 2
             cline = '{0} -query {1}temp_file/{2}seq1.fasta -subject {1}temp_file/{2}seq2.fasta -gapopen {3} -gapextend {4} -comp_based_stats {5} -use_sw_tback -outfmt "6" -max_hsps 1 -evalue {6}'.format(
-                blast_exe, data_path, genome_name, gap_open, gap_extend, comp_based, 5
+                blast_exe, output_path, genome_name, gap_open, gap_extend, comp_based, 5
             )
             # cline = 'blastp -query /home/asw23/antismash_on_full_genome/temp_file/seq1.fasta'
             child = subprocess.Popen(cline, stdout=subprocess.PIPE, shell=True)
@@ -387,7 +386,7 @@ def findSSNMembership(
                 break
 
             cline = '{0} -query {1}temp_file/{2}seq2.fasta -subject {1}temp_file/{2}seq1.fasta -gapopen {3} -gapextend {4} -comp_based_stats {5} -use_sw_tback -outfmt "6" -max_hsps 1 -evalue {6}'.format(
-                blast_exe, data_path, genome_name, gap_open, gap_extend, comp_based, 5
+                blast_exe, output_path, genome_name, gap_open, gap_extend, comp_based, 5
             )
             # child = subprocess.Popen(cline,shell=True,stdout=subprocess.PIPE,close_fds=True)
             child = subprocess.Popen(cline, stdout=subprocess.PIPE, shell=True)

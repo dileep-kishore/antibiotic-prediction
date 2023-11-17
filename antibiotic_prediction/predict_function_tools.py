@@ -3,7 +3,6 @@
 import pathlib
 
 import numpy as np
-
 import readFeatureFiles
 import SSN_tools
 
@@ -188,9 +187,13 @@ def read_training_data(
 
 
 def read_SSN_features(
-    data_dir: pathlib.Path, antismash_bgc_file: pathlib.Path, no_SSN: bool
+    data_dir: pathlib.Path,
+    antismash_bgc_file: pathlib.Path,
+    no_SSN: bool,
+    output_dir: pathlib.Path,
 ):
     data_path = str(data_dir) + "/"
+    output_path = str(output_dir) + "/"
     SSN_list = readFeatureFiles.readFeatureList(
         data_path + "feature_matrices/SSN_list.txt"
     )
@@ -227,6 +230,7 @@ def read_SSN_features(
             blastp_path,
             cluster_name,
             data_path,
+            output_path,
         )
         return test_SSN_feature_matrix
     else:

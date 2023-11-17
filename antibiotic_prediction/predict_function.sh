@@ -46,7 +46,6 @@ micromamba deactive &>/dev/null
 micromamba activate natural_product
 if [ ! -f "$OUTPUT_DIR/prediction_results.csv" ]; then
     echo "Running BGC activity prediction"
-    # FIXME: data dir
     python predict_function.py "$OUTPUT_DIR"/antismash "$OUTPUT_DIR"/rgi \
         --data_dir ../data \
         --output_dir "$OUTPUT_DIR" \
