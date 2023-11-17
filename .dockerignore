@@ -1,0 +1,6 @@
+.direnv/
+.vscode/
+.git/
+.stfolder/
+assets/
+outputs/
