@@ -365,7 +365,7 @@ def findSSNMembership(
             gap_open = "11"
             gap_extend = "1"
             comp_based = 2
-            cline = '{0} -query {1}temp_file/{2}seq1.fasta -subject {1}temp_file/{2}seq2.fasta -gapopen {3} -gapextend {4} -comp_based_stats {5} -use_sw_tback -outfmt "6" -max_hsps 1 -evalue {6}'.format(
+            cline = '{0} -query {1}temp_file/{2}seq1.fasta -subject {1}temp_file/{2}seq2.fasta -gapopen {3} -gapextend {4} -comp_based_stats {5} -use_sw_tback -outfmt "6" -num_threads 1 -max_hsps 1 -evalue {6}'.format(
                 blast_exe, output_path, genome_name, gap_open, gap_extend, comp_based, 5
             )
             # cline = 'blastp -query /home/asw23/antismash_on_full_genome/temp_file/seq1.fasta'
@@ -388,7 +388,7 @@ def findSSNMembership(
                 clusters_with_match.append(cluster)
                 break
 
-            cline = '{0} -query {1}temp_file/{2}seq2.fasta -subject {1}temp_file/{2}seq1.fasta -gapopen {3} -gapextend {4} -comp_based_stats {5} -use_sw_tback -outfmt "6" -max_hsps 1 -evalue {6}'.format(
+            cline = '{0} -query {1}temp_file/{2}seq2.fasta -subject {1}temp_file/{2}seq1.fasta -gapopen {3} -gapextend {4} -comp_based_stats {5} -use_sw_tback -outfmt "6" -num_threads 1 -max_hsps 1 -evalue {6}'.format(
                 blast_exe, output_path, genome_name, gap_open, gap_extend, comp_based, 5
             )
             # child = subprocess.Popen(cline,shell=True,stdout=subprocess.PIPE,close_fds=True)
