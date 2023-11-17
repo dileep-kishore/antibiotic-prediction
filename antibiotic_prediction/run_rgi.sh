@@ -10,4 +10,8 @@ GENOME_NAME=$3
 micromamba deactive &>/dev/null
 micromamba activate rgi
 
-rgi main -i "$GENOME" -o "$OUTPUT_DIR/$GENOME_NAME" --include_loose --clean
+rgi main -i "$GENOME" \
+    -o "$OUTPUT_DIR/$GENOME_NAME" \
+    --num_threads 1 \
+    --include_loose \
+    --clean

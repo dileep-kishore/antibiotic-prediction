@@ -5,18 +5,18 @@ eval "$(micromamba shell hook --shell bash)"
 
 GENOME=$1
 # GENOME_NAME=$(basename "${GENOME%%.*}")
-GENOME_NAME=$(basename $GENOME)
+GENOME_NAME=$(basename "$GENOME")
 OUTPUT_DIR=$2/$GENOME_NAME
-mkdir -p $OUTPUT_DIR
+mkdir -p "$OUTPUT_DIR"
 NO_SSN=$3
 
 # Step 1: Run antismash
 micromamba deactive &>/dev/null
 micromamba activate antismash
-if [ ! -d "$OUTPUT_DIR/antismash" ]; then
+if [ ! -d "$OUTPUT_DIR"/antismash ]; then
     echo "Running antismash"
-    mkdir -p $OUTPUT_DIR/antismash
-    bash run_antismash7.sh $GENOME $OUTPUT_DIR/antismash
+    mkdir -p "$OUTPUT_DIR"/antismash
+    bash run_antismash7.sh "$GENOME" "$OUTPUT_DIR"/antismash
 else
     echo "Antismash data for $GENOME already exists"
 fi
@@ -24,14 +24,18 @@ fi
 # Step 2: For each BGC get fasta and run RGI
 micromamba deactive &>/dev/null
 micromamba activate rgi
-if [ ! -d "$OUTPUT_DIR/rgi" ]; then
+if [ ! -d "$OUTPUT_DIR"/rgi ]; then
     echo "Running RGI"
-    mkdir -p $OUTPUT_DIR/rgi
-    for f in $OUTPUT_DIR/antismash/*region*.gbk; do
+    mkdir -p "$OUTPUT_DIR"/rgi
+    for f in "$OUTPUT_DIR"/antismash/*region*.gbk; do
         BGC=$(basename "$f" .gbk)
-        mkdir $OUTPUT_DIR/rgi/$BGC
-        python gbk2fasta.py "$f" $OUTPUT_DIR/rgi/"$BGC".fna
-        rgi main -i $OUTPUT_DIR/rgi/"$BGC".fna -o $OUTPUT_DIR/rgi/"$BGC"/"$BGC" --include_loose --clean
+        mkdir "$OUTPUT_DIR"/rgi/"$BGC"
+        python gbk2fasta.py "$f" "$OUTPUT_DIR"/rgi/"$BGC".fna
+        rgi main -i "$OUTPUT_DIR"/rgi/"$BGC".fna \
+            -o "$OUTPUT_DIR"/rgi/"$BGC"/"$BGC" \
+            --num_threads 1 \
+            --include_loose \
+            --clean
     done
 else
     echo "RGI data for $GENOME already exists"
@@ -42,10 +46,11 @@ micromamba deactive &>/dev/null
 micromamba activate natural_product
 if [ ! -f "$OUTPUT_DIR/prediction_results.csv" ]; then
     echo "Running BGC activity prediction"
-    python predict_function.py $OUTPUT_DIR/antismash $OUTPUT_DIR/rgi \
+    # FIXME: data dir
+    python predict_function.py "$OUTPUT_DIR"/antismash "$OUTPUT_DIR"/rgi \
         --data_dir ../data \
-        --output_dir $OUTPUT_DIR \
-        --no_SSN $NO_SSN \
+        --output_dir "$OUTPUT_DIR" \
+        --no_SSN "$NO_SSN" \
         --classifiers tree \
         --antismash_version 5 \
         --rgi_version 5
