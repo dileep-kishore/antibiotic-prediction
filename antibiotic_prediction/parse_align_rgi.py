@@ -248,9 +248,14 @@ def main(
             ]
         else:
             filtered_target_proteins = target_proteins
-        alignment, score, best_id = get_best_alignment(
-            query_protein, filtered_target_proteins, output_path
-        )
+        if filtered_target_proteins.empty:
+            best_id = ""
+            alignment = ()
+            score = 0.0
+        else:
+            alignment, score, best_id = get_best_alignment(
+                query_protein, filtered_target_proteins, output_path
+            )
         alignment_data.append(
             {
                 "query_id": query_protein.Contig,

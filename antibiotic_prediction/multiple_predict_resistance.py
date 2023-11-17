@@ -158,10 +158,11 @@ def main(
             for j, query_rgi_file in enumerate(query_bgc_markers):
                 perc_complete = (j + 1) / len(query_bgc_markers) * 100
                 for target_genome in genomes:
-                    if target_genome == query_genome:
+                    target_genome_dir = output_dir / target_genome.stem
+                    if target_genome.stem == query_genome:
                         continue
                     target_rgi_file = (
-                        target_genome / "rgi" / f"{target_genome.stem}.txt"
+                        target_genome_dir / "rgi" / f"{target_genome.stem}.txt"
                     )
                     alignment_task_args.append(
                         (
