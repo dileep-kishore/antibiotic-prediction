@@ -127,7 +127,7 @@ def main(
         for i, genome in enumerate(genomes):
             perc_complete = (i + 1) / len(genomes) * 100
             file_name = genome.stem
-            rgi_dir = output_dir / genome.name / "rgi"
+            rgi_dir = output_dir / genome.stem / "rgi"
             rgi_task_args.append((genome, rgi_dir, file_name, perc_complete))
         pool.starmap(run_rgi, rgi_task_args)
         # Get all combinations of gbks and run run_parse_clinker
