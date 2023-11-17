@@ -164,7 +164,13 @@ def main(
                         target_genome / "rgi" / f"{target_genome.stem}.txt"
                     )
                     alignment_task_args.append(
-                        (query_rgi_file, target_rgi_file, rgi_align_dir, True)
+                        (
+                            query_rgi_file,
+                            target_rgi_file,
+                            rgi_align_dir,
+                            True,
+                            perc_complete,
+                        )
                     )
             pool.starmap(parse_align_rgi, alignment_task_args)
 
