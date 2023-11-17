@@ -256,11 +256,21 @@ def main(
             alignment, score, best_id = get_best_alignment(
                 query_protein, filtered_target_proteins, output_path
             )
+        if best_id:
+            index = filtered_target_proteins.index[
+                filtered_target_proteins.Contig == best_id
+            ]
+            target_protein_seq = filtered_target_proteins.loc[
+                index, "Predicted_Protein"
+            ].item()
+        else:
+            target_protein_seq = ""
         alignment_data.append(
             {
                 "query_id": query_protein.Contig,
                 "target_id": best_id,
-                "alignment": alignment,
+                "query_protein": query_protein.Predicted_Protein,
+                "target_protein": target_protein_seq,
                 "score": score,
             }
         )
