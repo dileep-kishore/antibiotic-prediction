@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import argparse
-import glob
 import multiprocessing as mp
 import pathlib
 import subprocess
@@ -77,7 +76,9 @@ def parse_align_rgi(
     output_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(cmd, check=True)
     perc_str = "%:.2f".format(perc_complete)
-    callback = perc_str + "%. Running alignment on " + genome.stem
+    callback = (
+        f"{perc_str}%. Running alignment on {rgi_query.stem} and {rgi_target.stem}"
+    )
     print(callback)
     return callback
 
@@ -125,9 +126,8 @@ def main(
         rgi_task_args = []
         for i, genome in enumerate(genomes):
             perc_complete = (i + 1) / len(genomes) * 100
-            genome_dir = output_dir / genome
             file_name = genome.stem
-            rgi_dir = genome_dir / "rgi"
+            rgi_dir = output_dir / genome.name / "rgi"
             rgi_task_args.append((genome, rgi_dir, file_name, perc_complete))
         pool.starmap(run_rgi, rgi_task_args)
         # Get all combinations of gbks and run run_parse_clinker
@@ -135,8 +135,7 @@ def main(
             clinker_task_args = []
             print("--------------------------------------------")
             print(f"{i+1}: Running clinker on BGCs from {genome}")
-            genome_dir = output_dir / genome
-            genome_dir.mkdir(parents=True, exist_ok=True)
+            clinker_dir = output_dir / genome / "clinker"
             query_bgcs = genome_bgc_dict[genome]
             target_bgcs = get_target_bgcs(genome, genome_bgc_dict)
             # TODO: Can increase efficiency by preventing reverse comparisons
@@ -145,7 +144,6 @@ def main(
                 for target_bgc in target_bgcs:
                     if query_bgc == target_bgc:
                         continue
-                    clinker_dir = genome_dir / "clinker"
                     clinker_task_args.append(
                         (query_bgc, target_bgc, clinker_dir, perc_complete)
                     )
@@ -155,8 +153,7 @@ def main(
             alignment_task_args = []
             print("--------------------------------------------")
             print(f"{i+1}: Running alignment on RGI makers from {query_genome}")
-            genome_dir = output_dir / query_genome
-            genome_dir.mkdir(parents=True, exist_ok=True)
+            rgi_align_dir = output_dir / query_genome / "rgi_align"
             query_bgc_markers = genome_bgc_rgi_dict[query_genome]
             for j, query_rgi_file in enumerate(query_bgc_markers):
                 perc_complete = (j + 1) / len(query_bgc_markers) * 100
@@ -166,7 +163,6 @@ def main(
                     target_rgi_file = (
                         target_genome / "rgi" / f"{target_genome.stem}.txt"
                     )
-                    rgi_align_dir = genome_dir / "rgi_align"
                     alignment_task_args.append(
                         (query_rgi_file, target_rgi_file, rgi_align_dir, True)
                     )
@@ -197,9 +193,10 @@ if __name__ == "__main__":
         raise FileNotFoundError(f"{data_dir} does not exist")
 
     genomes_glob = ARGS.genomes_glob
+    genome_parent_dir = pathlib.Path(genomes_glob).parent
+    genome_glob_pattern = pathlib.Path(genomes_glob).name
     genomes = []
-    for genome in glob.glob(genomes_glob):
-        genome_path = pathlib.Path(genome)
+    for genome_path in genome_parent_dir.glob(genome_glob_pattern):
         if not genome_path.is_file():
             continue
         genomes.append(genome_path)
