@@ -16,7 +16,7 @@ def run_parse_clinker(
 ) -> str:
     cmd = [
         "python",
-        "parse_clinker.py",
+        "run_parse_clinker.py",
         str(antibiotic_bgc),
         str(target_bgc),
         "--output_dir",
