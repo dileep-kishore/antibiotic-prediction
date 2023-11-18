@@ -4,8 +4,11 @@ import argparse
 import multiprocessing as mp
 import pathlib
 import subprocess
+import warnings
 from collections import defaultdict
 from itertools import combinations
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 def run_parse_clinker(
@@ -126,8 +129,8 @@ def main(
         # Get all combinations of gbks and run run_parse_clinker
         for i, genome in enumerate(genome_bgc_dict):
             clinker_task_args = []
-            print("--------------------------------------------")
-            print(f"{i+1}: Running clinker on BGCs from {genome}")
+            print("--------------------------------------------", flush=True)
+            print(f"{i+1}: Running clinker on BGCs from {genome}", flush=True)
             clinker_dir = output_dir / genome / "clinker"
             query_bgcs = genome_bgc_dict[genome]
             # FIXME: Genome combinations are not exhaustive!!
@@ -145,8 +148,11 @@ def main(
         # Run parse_align_rgi on all the query_rgi_dict vs. genomes
         for i, query_genome in enumerate(genome_bgc_rgi_dict):
             alignment_task_args = []
-            print("--------------------------------------------")
-            print(f"{i+1}: Running alignment on RGI makers from {query_genome}")
+            print("--------------------------------------------", flush=True)
+            print(
+                f"{i+1}: Running alignment on RGI makers from {query_genome}",
+                flush=True,
+            )
             rgi_align_dir = output_dir / query_genome / "rgi_align"
             query_bgc_markers = genome_bgc_rgi_dict[query_genome]
             for j, query_rgi_file in enumerate(query_bgc_markers):
