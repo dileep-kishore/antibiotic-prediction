@@ -19,7 +19,7 @@ def run_predict_function(
     subprocess.run(cmd, check=True)
     perc_str = "%:.2f".format(perc_complete)
     callback = perc_str + ". Running BGC function prediction on " + genome.stem
-    print(callback)
+    print(callback, flush=True)
     return callback
 
 

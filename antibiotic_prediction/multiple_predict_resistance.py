@@ -26,11 +26,8 @@ def run_parse_clinker(
         return f"Clinker output for {output_dir.parent.stem} already exists"
     output_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(cmd, check=True)
-    perc_str = "%:.2f".format(perc_complete)
-    callback = (
-        perc_str + "%. Running BGC function prediction on " + output_dir.parent.stem
-    )
-    print(callback)
+    callback = f"{perc_complete:.2f}%. Running BGC function prediction on {output_dir.parent.stem}"
+    print(callback, flush=True)
     return callback
 
 
@@ -48,9 +45,8 @@ def run_rgi(
         return f"RGI output for {genome.stem} already exists"
     output_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(cmd, check=True)
-    perc_str = "%:.2f".format(perc_complete)
-    callback = perc_str + "%. Running RGI on " + genome.stem
-    print(callback)
+    callback = f"{perc_complete:.2f}%. Running RGI on {genome.stem}"
+    print(callback, flush=True)
     return callback
 
 
@@ -75,11 +71,8 @@ def parse_align_rgi(
         return f"Alignment output for {rgi_query.stem} already exists"
     output_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(cmd, check=True)
-    perc_str = "%:.2f".format(perc_complete)
-    callback = (
-        f"{perc_str}%. Running alignment on {rgi_query.stem} and {rgi_target.stem}"
-    )
-    print(callback)
+    callback = f"{perc_complete:.2f}%. Running alignment on {rgi_query.stem} and {rgi_target.stem}"
+    print(callback, flush=True)
     return callback
 
 
@@ -94,7 +87,7 @@ def get_data_files(
         for data_file in antismash_folder.glob(glob):
             if data_file.stem == genome_folder.stem:
                 continue
-            data_dict[genome_folder.stem].append(data_file)
+            data_dict[genome_folder.name].append(data_file)
     return data_dict
 
 
@@ -137,6 +130,7 @@ def main(
             print(f"{i+1}: Running clinker on BGCs from {genome}")
             clinker_dir = output_dir / genome / "clinker"
             query_bgcs = genome_bgc_dict[genome]
+            # FIXME: Genome combinations are not exhaustive!!
             target_bgcs = get_target_bgcs(genome, genome_bgc_dict)
             # TODO: Can increase efficiency by preventing reverse comparisons
             for j, query_bgc in enumerate(query_bgcs):
