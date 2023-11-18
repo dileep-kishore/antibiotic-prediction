@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 
 import argparse
+import logging
 import pathlib
 
 import pandas as pd
 from clinker.align import Globaligner
 from clinker.main import clinker
+
+logging.basicConfig(level=logging.ERROR)
 
 # TODO: Check notes for details
 # Metric 2: The number of genes in the antibiotic BGC that are aligned (gives you # of genes with similarity > 0.3)
