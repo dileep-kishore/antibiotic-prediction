@@ -105,6 +105,68 @@ def get_target_bgcs(
     return target_bgcs
 
 
+def parallel_run_rgi(genomes, output_dir, pool):
+    rgi_task_args = []
+    for i, genome in enumerate(genomes):
+        perc_complete = (i + 1) / len(genomes) * 100
+        file_name = genome.stem
+        rgi_dir = output_dir / genome.stem / "rgi"
+        rgi_task_args.append((genome, rgi_dir, file_name, perc_complete))
+    pool.starmap(run_rgi, rgi_task_args)
+
+
+def parallel_run_parse_clinker(output_dir, genome_bgc_dict, pool):
+    for i, genome in enumerate(genome_bgc_dict):
+        clinker_task_args = []
+        print("--------------------------------------------", flush=True)
+        print(f"{i+1}: Running clinker on BGCs from {genome}", flush=True)
+        clinker_dir = output_dir / genome / "clinker"
+        query_bgcs = genome_bgc_dict[genome]
+        # FIXME: Genome combinations are not exhaustive!!
+        target_bgcs = get_target_bgcs(genome, genome_bgc_dict)
+        # TODO: Can increase efficiency by preventing reverse comparisons
+        for j, query_bgc in enumerate(query_bgcs):
+            perc_complete = (j + 1) / len(query_bgcs) * 100
+            for target_bgc in target_bgcs:
+                if query_bgc == target_bgc:
+                    continue
+                clinker_task_args.append(
+                    (query_bgc, target_bgc, clinker_dir, perc_complete)
+                )
+        pool.starmap(run_parse_clinker, clinker_task_args)
+
+
+def parallel_parse_align_rgi(genomes, output_dir, genome_bgc_rgi_dict, pool):
+    for i, query_genome in enumerate(genome_bgc_rgi_dict):
+        alignment_task_args = []
+        print("--------------------------------------------", flush=True)
+        print(
+            f"{i+1}: Running alignment on RGI makers from {query_genome}",
+            flush=True,
+        )
+        rgi_align_dir = output_dir / query_genome / "rgi_align"
+        query_bgc_markers = genome_bgc_rgi_dict[query_genome]
+        for j, query_rgi_file in enumerate(query_bgc_markers):
+            perc_complete = (j + 1) / len(query_bgc_markers) * 100
+            for target_genome in genomes:
+                target_genome_dir = output_dir / target_genome.stem
+                if target_genome.stem == query_genome:
+                    continue
+                target_rgi_file = (
+                    target_genome_dir / "rgi" / f"{target_genome.stem}.txt"
+                )
+                alignment_task_args.append(
+                    (
+                        query_rgi_file,
+                        target_rgi_file,
+                        rgi_align_dir,
+                        True,
+                        perc_complete,
+                    )
+                )
+        pool.starmap(parse_align_rgi, alignment_task_args)
+
+
 def main(
     data_dir: pathlib.Path,
     genomes: list[pathlib.Path],
@@ -119,61 +181,11 @@ def main(
         npools = ncpus
     with mp.Pool(npools) as pool:
         # Run RGI on all the genomes
-        rgi_task_args = []
-        for i, genome in enumerate(genomes):
-            perc_complete = (i + 1) / len(genomes) * 100
-            file_name = genome.stem
-            rgi_dir = output_dir / genome.stem / "rgi"
-            rgi_task_args.append((genome, rgi_dir, file_name, perc_complete))
-        pool.starmap(run_rgi, rgi_task_args)
+        parallel_run_rgi(genomes, output_dir, pool)
         # Get all combinations of gbks and run run_parse_clinker
-        for i, genome in enumerate(genome_bgc_dict):
-            clinker_task_args = []
-            print("--------------------------------------------", flush=True)
-            print(f"{i+1}: Running clinker on BGCs from {genome}", flush=True)
-            clinker_dir = output_dir / genome / "clinker"
-            query_bgcs = genome_bgc_dict[genome]
-            # FIXME: Genome combinations are not exhaustive!!
-            target_bgcs = get_target_bgcs(genome, genome_bgc_dict)
-            # TODO: Can increase efficiency by preventing reverse comparisons
-            for j, query_bgc in enumerate(query_bgcs):
-                perc_complete = (j + 1) / len(query_bgcs) * 100
-                for target_bgc in target_bgcs:
-                    if query_bgc == target_bgc:
-                        continue
-                    clinker_task_args.append(
-                        (query_bgc, target_bgc, clinker_dir, perc_complete)
-                    )
-            pool.starmap(run_parse_clinker, clinker_task_args)
+        parallel_run_parse_clinker(output_dir, genome_bgc_dict, pool)
         # Run parse_align_rgi on all the query_rgi_dict vs. genomes
-        for i, query_genome in enumerate(genome_bgc_rgi_dict):
-            alignment_task_args = []
-            print("--------------------------------------------", flush=True)
-            print(
-                f"{i+1}: Running alignment on RGI makers from {query_genome}",
-                flush=True,
-            )
-            rgi_align_dir = output_dir / query_genome / "rgi_align"
-            query_bgc_markers = genome_bgc_rgi_dict[query_genome]
-            for j, query_rgi_file in enumerate(query_bgc_markers):
-                perc_complete = (j + 1) / len(query_bgc_markers) * 100
-                for target_genome in genomes:
-                    target_genome_dir = output_dir / target_genome.stem
-                    if target_genome.stem == query_genome:
-                        continue
-                    target_rgi_file = (
-                        target_genome_dir / "rgi" / f"{target_genome.stem}.txt"
-                    )
-                    alignment_task_args.append(
-                        (
-                            query_rgi_file,
-                            target_rgi_file,
-                            rgi_align_dir,
-                            True,
-                            perc_complete,
-                        )
-                    )
-            pool.starmap(parse_align_rgi, alignment_task_args)
+        parallel_parse_align_rgi(genomes, output_dir, genome_bgc_rgi_dict, pool)
 
 
 if __name__ == "__main__":
