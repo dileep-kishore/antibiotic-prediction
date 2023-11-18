@@ -25,8 +25,6 @@ def run_parse_clinker(
         "--output_dir",
         str(output_dir),
     ]
-    if output_dir.is_dir():
-        return f"Clinker output for {output_dir.parent.stem} already exists"
     output_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(cmd, check=True)
     callback = f"{perc_complete:.2f}%. Running BGC function prediction on {output_dir.parent.stem}"
@@ -70,8 +68,6 @@ def parse_align_rgi(
     ]
     if filter:
         cmd.append("--filter")
-    if output_dir.is_dir():
-        return f"Alignment output for {rgi_query.stem} already exists"
     output_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(cmd, check=True)
     callback = f"{perc_complete:.2f}%. Running alignment on {rgi_query.stem} and {rgi_target.stem}"
@@ -122,7 +118,6 @@ def parallel_run_parse_clinker(output_dir, genome_bgc_dict, pool):
         print(f"{i+1}: Running clinker on BGCs from {genome}", flush=True)
         clinker_dir = output_dir / genome / "clinker"
         query_bgcs = genome_bgc_dict[genome]
-        # FIXME: Genome combinations are not exhaustive!!
         target_bgcs = get_target_bgcs(genome, genome_bgc_dict)
         # TODO: Can increase efficiency by preventing reverse comparisons
         for j, query_bgc in enumerate(query_bgcs):
