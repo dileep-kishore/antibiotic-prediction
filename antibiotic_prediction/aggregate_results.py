@@ -73,7 +73,7 @@ def main(genome_paths: List[pathlib.Path], output_dir: pathlib.Path):
     partial_results = []
     genomes = [genome_path.stem for genome_path in genome_paths]
     for outputs in output_dir.iterdir():
-        if outputs.is_dir() and outputs.stem in genomes:
+        if outputs.is_dir() and outputs.name in genomes:
             print("Processing results from " + str(outputs))
             partial_results_file = outputs / "prediction_results.csv"
             partial_results.append(pd.read_csv(partial_results_file))
