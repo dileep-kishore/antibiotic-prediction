@@ -4,11 +4,7 @@ import argparse
 import multiprocessing as mp
 import pathlib
 import subprocess
-import warnings
 from collections import defaultdict
-from itertools import combinations
-
-warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 def run_parse_clinker(

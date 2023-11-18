@@ -4,10 +4,7 @@ import argparse
 import multiprocessing as mp
 import pathlib
 import subprocess
-import warnings
 from typing import List
-
-warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 def aggregate_results_cmd(genomes: List[pathlib.Path], output_dir: str):

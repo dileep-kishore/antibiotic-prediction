@@ -3,11 +3,14 @@
 import argparse
 import pathlib
 import subprocess
+import warnings
 
 import pandas as pd
 from Bio import Align, SearchIO, SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
+
+warnings.filterwarnings("ignore", DeprecationWarning)
 
 
 def parse_rgi(rgi_file: str) -> pd.DataFrame:
