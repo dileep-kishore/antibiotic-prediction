@@ -32,20 +32,15 @@ USER $MAMBA_USER
 # mamba setup
 RUN micromamba shell init --shell=bash --prefix=~/micromamba
 
-# Copy setup scripts
-COPY --chown=$MAMBA_USER:$MAMBA_USER setup/install_antismash.sh /deps/
-COPY --chown=$MAMBA_USER:$MAMBA_USER setup/install_rgi.sh /deps/
-# Copy env files
-COPY --chown=$MAMBA_USER:$MAMBA_USER setup/env_natural_product.yml /deps/
-# COPY setup/env_rgi5.yml ~/deps/
-
 # Set up the environments for antibiotic prediction
+COPY --chown=$MAMBA_USER:$MAMBA_USER setup/install_antismash.sh /deps/
 RUN bash /deps/install_antismash.sh
+COPY --chown=$MAMBA_USER:$MAMBA_USER setup/install_rgi.sh /deps/
 RUN bash /deps/install_rgi.sh
+COPY --chown=$MAMBA_USER:$MAMBA_USER setup/env_natural_product.yml /deps/
 RUN micromamba env create -f /deps/env_natural_product.yml
-# RUN micromamba env create -f /deps/env_rgi5.yml
 
-# Set up environment for resistance prediction
+# Set up the environment for resistance prediction
 COPY --chown=$MAMBA_USER:$MAMBA_USER setup/env_resistance_prediction.yml /deps/
 RUN micromamba env create -f /deps/env_resistance_prediction.yml
 
