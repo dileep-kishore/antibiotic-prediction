@@ -10,9 +10,9 @@ micromamba install --channel conda-forge --channel bioconda --channel defaults r
 
 micromamba activate rgi
 
-# Autoload databases
-rgi auto_load
+# # Autoload databases
+# rgi auto_load
 
-# # Load the latest AMR reference database
-# wget https://card.mcmaster.ca/latest/data && tar -xvf data ./card.json
-# rgi load --card_json card.json
+# Load the latest AMR reference database
+wget https://card.mcmaster.ca/latest/data && tar -xvf data ./card.json
+rgi load --card_json card.json
