@@ -26,9 +26,9 @@ def run_parse_clinker(
         str(output_dir),
     ]
     output_dir.mkdir(parents=True, exist_ok=True)
-    subprocess.run(cmd, check=True)
     callback = f"{perc_complete:.2f}%. Running BGC function prediction on {output_dir.parent.stem}"
     print(callback, flush=True)
+    subprocess.run(cmd, check=True)
     return callback
 
 
@@ -45,9 +45,9 @@ def run_rgi(
     if output_dir.is_dir():
         return f"RGI output for {genome.stem} already exists"
     output_dir.mkdir(parents=True, exist_ok=True)
-    subprocess.run(cmd, check=True)
     callback = f"{perc_complete:.2f}%. Running RGI on {genome.stem}"
     print(callback, flush=True)
+    subprocess.run(cmd, check=True)
     return callback
 
 
@@ -69,9 +69,9 @@ def parse_align_rgi(
     if filter:
         cmd.append("--filter")
     output_dir.mkdir(parents=True, exist_ok=True)
-    subprocess.run(cmd, check=True)
     callback = f"{perc_complete:.2f}%. Running alignment on {rgi_query.stem} and {rgi_target.stem}"
     print(callback, flush=True)
+    subprocess.run(cmd, check=True)
     return callback
 
 
